@@ -7,6 +7,10 @@
     "start-dev": "nodemon --exec node -r dotenv/config index.js"
   },
   "author": "metehus",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/musicorum-app/scheduler.git"
+  },
   "license": "GNU General Public License v3.0",
   "dependencies": {
     "chalk": "^2.4.2",
