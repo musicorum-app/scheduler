@@ -8,13 +8,14 @@
   },
   "author": "metehus",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/musicorum-app/scheduler.git"
+    "type": "git",
+    "url": "https://github.com/musicorum-app/scheduler.git"
   },
   "license": "GNU General Public License v3.0",
   "dependencies": {
     "chalk": "^2.4.2",
     "express": "^4.17.1",
+    "lastfm-node-client": "git+https://git@github.com/musicorum-app/lastfm-node-client.git",
     "mongoose": "^5.7.3",
     "morgan": "^1.9.1",
     "node-cron": "^2.0.3",

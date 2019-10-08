@@ -1,7 +1,6 @@
-const { Schema } = require('mongoose')
+const mongoose = require('mongoose')
 
-module.exports = new Schema({
-  id: String,
+const Scheduler = new mongoose.Schema({
   user: String,
   schedule: {
     type: String,
@@ -12,3 +11,5 @@ module.exports = new Schema({
   theme: String,
   themeOptions: Object
 })
+
+module.exports = mongoose.model('Scheduler', Scheduler)
