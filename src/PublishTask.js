@@ -3,10 +3,8 @@ const { crypto } = require('./utils')
 const LFM = require('lastfm-node-client')
 const fetch = require('node-fetch')
 
-const LastFM = new LFM(process.env.LASTFM_KEY, process.env.LASTFM_SECRET)
-
 module.exports = async ({ user, schedule }) => {
-  const { themeOptions: options, theme, text } = schedule
+  const { themeOptions: options, theme } = schedule
   // TODO: Finish this
   try {
     let { accessToken, accessSecret } = user.twitter
@@ -22,16 +20,12 @@ module.exports = async ({ user, schedule }) => {
       consumer_secret: process.env.TWITTER_API_SECRET
     })
 
-    const lastfmUser = await new Promise((resolve, reject) => {
-      LastFM.userGetInfoAuthenticated((err, data) => {
-        if (err) reject(err)
-        resolve(data.user.name)
-      }, sessionKey)
-    })
+    const lfm = new LFM(process.env.LASTFM_KEY, process.env.LASTFM_SECRET, sessionKey)
+    const lfmUser = await lfm.userGetInfo()
 
-    console.log(text)
+    console.log(lfmUser.user.name)
 
-    options.user = lastfmUser
+    options.user = lfmUser.user.name
 
     const body = { theme, options }
 

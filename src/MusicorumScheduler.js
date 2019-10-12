@@ -25,6 +25,7 @@ module.exports = class MusicorumScheduler {
         u.schedules.forEach(sch => {
           const { time, name, timezone } = sch
           const { minute, hour } = this.getTime(time)
+
           cron.schedule(`${minute} ${hour} * * 6,7`, () => {
             PublishTask({ user: u, schedule: sch })
             console.log(chalk.magenta(' TASK RUN ') + 'schedule ' + chalk.cyan(name) + ' ran from user ' + chalk.cyan(u._id))

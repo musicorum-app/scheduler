@@ -4,6 +4,7 @@
   "description": "Tweet scheduler for Musicorum app",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "start-dev": "nodemon --exec node -r dotenv/config index.js"
   },
   "author": "metehus",
@@ -15,7 +16,7 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "express": "^4.17.1",
-    "lastfm-node-client": "git+https://git@github.com/musicorum-app/lastfm-node-client.git",
+    "lastfm-node-client": "^2.1.0",
     "mongoose": "^5.7.3",
     "morgan": "^1.9.1",
     "node-cron": "^2.0.3",
