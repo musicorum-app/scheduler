@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/musicorum-app/scheduler.git"
   },
-  "license": "GNU General Public License v3.0",
+  "license": "GPL-3.0",
   "dependencies": {
     "chalk": "^2.4.2",
     "express": "^4.17.1",
