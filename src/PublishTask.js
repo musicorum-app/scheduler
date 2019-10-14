@@ -2,9 +2,12 @@ const Twit = require('twit')
 const { crypto } = require('./utils')
 const LFM = require('lastfm-node-client')
 const fetch = require('node-fetch')
+const Run = require('./db/schemas/Run.js')
+const FormData = require('form-data')
 
 module.exports = async ({ user, schedule }) => {
   const { themeOptions: options, theme } = schedule
+  const startDate = new Date()
   // TODO: Finish this
   try {
     let { accessToken, accessSecret } = user.twitter
@@ -29,13 +32,21 @@ module.exports = async ({ user, schedule }) => {
 
     const body = { theme, options }
 
-    fetch(`${process.env.GENERATOR_URL}/generate`, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } })
+    const run = {
+      schedule: schedule._id
+    }
+
+    await fetch(`${process.env.GENERATOR_URL}/generate`, { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } })
       .then(res => res.buffer())
       .then(buffer => {
         const base64 = buffer.toString('base64')
+
         Twitter.post('media/upload', { media_data: base64 }, (err, data) => {
           if (err) {
             console.error(err)
+            run.status = 'ERROR'
+            run.message = err
+            new Run(run).save()
             return
           }
           const mediaIdStr = data.media_id_string
@@ -43,23 +54,54 @@ module.exports = async ({ user, schedule }) => {
           const metaParams = { media_id: mediaIdStr, alt_text: { text: altText } }
 
           Twitter.post('media/metadata/create', metaParams, (err, data) => {
-            if (!err) {
-              // now we can reference the media and post a tweet (media will attach to the tweet)
-              var params = { media_ids: [mediaIdStr] }
-
-              console.log(params)
-
-              Twitter.post('statuses/update', params, (err, data, response) => {
-                if (err) console.error(err)
-                console.log(data)
-              })
-            } else {
+            if (err) {
               console.error(err)
+              run.status = 'ERROR'
+              run.message = err
+              new Run(run).save()
+              return
             }
+            const params = { media_ids: [mediaIdStr] }
+
+            Twitter.post('statuses/update', params, (err, data, response) => {
+              if (err) {
+                console.error(err)
+                run.status = 'ERROR'
+                run.message = err
+                new Run(run).save()
+                return
+              }
+              console.log('SCHEDULE TWEET ID ' + data.id_str)
+
+              doRun(base64, data, schedule, startDate)
+            })
           })
         })
       })
   } catch (e) {
     console.error(e)
   }
+}
+
+function doRun (imageb64, tweetData, schedule, startDate) {
+  const form = new FormData()
+  form.append('image', imageb64)
+  fetch('https://api.imgur.com/3/upload', {
+    method: 'POST',
+    body: form,
+    headers: { Authorization: `Client-ID ${process.env.IMGUR_CLIENT}`, ...form.getHeaders() }
+  })
+    .then(res => res.json())
+    .then(res => {
+      const run = {
+        startTime: startDate,
+        endTime: new Date(),
+        schedule: schedule._id,
+        image: res.data.link,
+        status: 'SUCCESS',
+        message: 'Success run.',
+        tweetId: tweetData.id_str
+      }
+      new Run(run).save()
+    })
 }
