@@ -1,0 +1,10 @@
+version:  '2.1'
+
+services:
+  scheduler:
+    image: scheduler
+    build: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 6500:6500
