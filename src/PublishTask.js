@@ -6,7 +6,7 @@ const Run = require('./db/schemas/Run.js')
 const FormData = require('form-data')
 
 module.exports = async ({ user, schedule }) => {
-  const { themeOptions: options, theme } = schedule
+  const { themeOptions: options, theme, text } = schedule
   const startDate = new Date()
   // TODO: Finish this
   try {
@@ -61,7 +61,7 @@ module.exports = async ({ user, schedule }) => {
               new Run(run).save()
               return
             }
-            const params = { media_ids: [mediaIdStr] }
+            const params = { media_ids: [mediaIdStr], status: text }
 
             Twitter.post('statuses/update', params, (err, data, response) => {
               if (err) {
