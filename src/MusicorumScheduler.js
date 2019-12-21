@@ -49,18 +49,17 @@ module.exports = class MusicorumScheduler {
     const { time, name, timezone, day, schedule: type } = schedule
     const { minute, hour } = this.getTime(time)
 
-    let cron
-
+    let cronArg
     switch (type) {
       case 'WEEKLY':
-        cron = `${minute} ${hour} * * ${day}`
+        cronArg = `${minute} ${hour} * * ${day}`
         break
       case 'MONTHLY':
-        cron = `${minute} ${hour} 1 * *`
+        cronArg = `${minute} ${hour} 1 * *`
         break
     }
 
-    this.tasks[schedule._id] = cron.schedule(cron, () => {
+    this.tasks[schedule._id] = cron.schedule(cronArg, () => {
       PublishTask({ user, schedule })
       console.log(chalk.magenta(' TASK RUN ') + 'schedule ' + chalk.cyan(name) + ' (' + chalk.blue(schedule._id) + ')')
     }, {

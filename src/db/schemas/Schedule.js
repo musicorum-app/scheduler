@@ -7,6 +7,7 @@ const Schedule = new mongoose.Schema({
     enum: ['MONTHY', 'WEEKLY']
   },
   time: Number,
+  day: Number,
   timezone: String,
   text: String,
   theme: {
