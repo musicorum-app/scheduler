@@ -70,7 +70,7 @@ module.exports = class MusicorumScheduler {
   }
 
   routes (route) {
-    route.post('/tasks/:user/:id', async (req, res) => {
+    route.post('/tasks/:user/:id', tokenMiddleware, async (req, res) => {
       try {
         const id = req.params.id
         const userId = req.params.user

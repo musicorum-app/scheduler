@@ -6,7 +6,7 @@ module.exports = async (req, res, next) => {
     return res.status(401).json(responses.INVALID_TOKEN)
   }
 
-  if (token === process.env.WEB_SECRET) {
+  if (token === process.env.SCHEDULER_TOKEN) {
     next()
   } else {
     res.status(401).json(responses.INVALID_TOKEN)
