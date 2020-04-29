@@ -4,7 +4,7 @@ const LFM = require('lastfm-node-client')
 const fetch = require('node-fetch')
 const Run = require('./db/schemas/Run.js')
 const FormData = require('form-data')
-const Sentry = '@sentry/node'
+const Sentry = require('@sentry/node')
 
 Sentry.init({ dsn: process.env.SENTRY_DSN })
 

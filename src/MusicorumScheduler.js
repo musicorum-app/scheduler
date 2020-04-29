@@ -7,7 +7,7 @@ const app = express()
 const PublishTask = require('./PublishTask.js')
 const tokenMiddleware = require('./utils/tokenMiddleware.js')
 const responses = require('./utils/responses.js')
-const Sentry = '@sentry/node'
+const Sentry = require('@sentry/node')
 
 Sentry.init({ dsn: process.env.SENTRY_DSN })
 
