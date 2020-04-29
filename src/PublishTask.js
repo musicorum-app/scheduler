@@ -4,11 +4,13 @@ const LFM = require('lastfm-node-client')
 const fetch = require('node-fetch')
 const Run = require('./db/schemas/Run.js')
 const FormData = require('form-data')
+const Sentry = '@sentry/node'
+
+Sentry.init({ dsn: process.env.SENTRY_DSN })
 
 module.exports = async ({ user, schedule }) => {
   const { themeOptions: options, theme, text } = schedule
   const startDate = new Date()
-  // TODO: Finish this
   try {
     let { accessToken, accessSecret } = user.twitter
     let { sessionKey } = user.lastfm
@@ -79,6 +81,7 @@ module.exports = async ({ user, schedule }) => {
         })
       })
   } catch (e) {
+    Sentry.captureException(e)
     console.error(e)
   }
 }

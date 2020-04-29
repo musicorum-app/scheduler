@@ -7,14 +7,20 @@ const app = express()
 const PublishTask = require('./PublishTask.js')
 const tokenMiddleware = require('./utils/tokenMiddleware.js')
 const responses = require('./utils/responses.js')
+const Sentry = '@sentry/node'
+
+Sentry.init({ dsn: process.env.SENTRY_DSN })
 
 module.exports = class MusicorumScheduler {
   async init () {
     this.port = process.env.PORT
     await this.connectDatabase()
+    app.use(Sentry.Handlers.requestHandler())
     app.use(express.json())
 
     await this.routes(app)
+
+    app.use(Sentry.Handlers.errorHandler())
 
     app.listen(this.port, () =>
       console.log(chalk.bgGreen(' SUCCESS ') + ' Web server started on port ' + chalk.blue(this.port)))
